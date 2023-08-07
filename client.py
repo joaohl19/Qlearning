@@ -3,7 +3,9 @@ import random
 import time
 
 s = cn.connect(2037)
+
 print(s)
+
 def choose_action(jogadas):
     action = random.randint(0, 2)
     return action
@@ -18,9 +20,9 @@ def initialize_table(q_table):
 
         q_table.append(linha)
 
-def q_table_update(q_table, linha, coluna, alfa, gama, reward, state):
-    q_table[linha][coluna] = (1 - alfa) * q_table[linha][coluna] + alfa * (reward + (gama *  ))
-
+def q_table_update(q_value, coluna, alfa, gama, reward, max_value):
+    # Updates q_table
+    q_value = (1 - alfa) * q_value + (alfa * (reward + (gama * max_value)))
 
 # As linhas de 0 <= index <= 23 indicam as plataformas da 0 até a 23 com a direção do personagem NORTH
 
@@ -41,27 +43,40 @@ initialize_table(q_table) # Inicializa a Q-Table
 alfa = 0.2 # Taxa de aprendizagem
 gama = 0.5 # Taxa de desconto
 
+# Modelando o estado inicial
+current_platform = 0 # 0
+current_direction = 0 # North
+current_state = current_platform + (24 * current_direction) # Multiplicação da direção pelo número da plataforma para mapear a linha certa de acordo com a direção
 
 while True:
+
     action_idx = choose_action(jogadas)
     action = jogadas[action_idx]
 
-    # Recebe o estado e a recompensa resultantes da ação
-    state, reward = cn.get_state_reward(s, action)
+    current_value = q_table[current_state][action_idx]
 
-    state = str(state)
-    platform = int(state[2:7], 2) # Converting platform number to integer
-    direction = state[7:9] # North = 00 / East = 01 / South = 10 / West= 11
+    # Recebe o estado e a recompensa resultantes da ação
+    state_str, reward = cn.get_state_reward(s, action)
+
+    state_str = str(state_str)
+    platform = int(state_str[2:7], 2) # Converting platform number to integer
+    direction = int(state_str[7:9], 2) # North = 0 / East = 1 / South = 2 / West= 3
+
     print(action)
     print(platform)
     print(direction)
 
-    time.sleep(5)
-    direction_int = int(direction, 2) # Conversão da direção pra inteiro
+    time.sleep(30)
     
-    linha = direction_int * platform # Multiplicação da direção pelo número da plataforma para mapear a linha certa de acordo com a direção
+    state = platform + (direction * 24) # Nova variável STATE como inteiro para ser usada nos acessos à q_table
 
-    q_table[linha][action_idx]
+    # Defiine o maior reforço futuro possível
+
+    max_value = max(q_table[state][0], q_table[state][1], q_table[state][2])
+
+    q_table_update(current_value, action_idx, alfa, gama, reward, max_value)
+
+    current_state = state
     
   
 
