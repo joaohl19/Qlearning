@@ -53,10 +53,9 @@ while True:
     action_idx = choose_action(jogadas)
     action = jogadas[action_idx]
 
-    current_value = q_table[current_state][action_idx]
-
-    # Recebe o estado e a recompensa resultantes da ação
-    state_str, reward = cn.get_state_reward(s, action)
+    current_value = q_table[current_state][action_idx] # Atribui ao CURRENT VALUE o valor da tabela para o estado CURRENT STATE com a ação escolhida
+    
+    state_str, reward = cn.get_state_reward(s, action)  # Recebe o estado e a recompensa resultantes da ação
 
     state_str = str(state_str)
     platform = int(state_str[2:7], 2) # Converting platform number to integer
@@ -70,13 +69,11 @@ while True:
     
     state = platform + (direction * 24) # Nova variável STATE como inteiro para ser usada nos acessos à q_table
 
-    # Defiine o maior reforço futuro possível
+    max_value = max(q_table[state][0], q_table[state][1], q_table[state][2]) # Defiine o maior reforço futuro possível
 
-    max_value = max(q_table[state][0], q_table[state][1], q_table[state][2])
+    q_table_update(current_value, action_idx, alfa, gama, reward, max_value) # Atualiza a q_table
 
-    q_table_update(current_value, action_idx, alfa, gama, reward, max_value)
-
-    current_state = state
+    current_state = state # Atualiza o current state antes da próxima jogada
     
   
 
