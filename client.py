@@ -17,17 +17,10 @@ def q_table_update(q_value, coluna, alfa, gama, reward, max_value):
     q_value = (1 - alfa) * q_value + (alfa * (reward + (gama * max_value)))
     return q_value
 
-
-# As linhas de 0 <= index <= 23 indicam as plataformas da 0 até a 23 com a direção do personagem NORTH
-
-# As linhas de 24 <= index <= 47 indicam as plataformas da 0 até a 23 com a direção do personagem EAST
-
-# As linhas de 48 <= index <= 71 indicam as plataformas da 0 até a 23 com a direção do personagem SOUTH
-
-# As linhas de 72 <= index <= 95 indicam as plataformas da 0 até a 23 com a direção do personagem WEST
+# Linhas 0 à 3 -> plataforma 0 nas direções Norte, Leste, Sul, Oeste
+# Linhas 4 à 7 -> plataforma 1 nas direções Norte, Leste, Sul, Oeste ...
 
 # As colunas de 0 a 2 representam, nessa ordem, LEFT, RIGHT, JUMP
-
 
 jogadas = ["left", "right", "jump"] # Define as possíveis jogadas
 
@@ -43,6 +36,7 @@ current_state = 0 # Platform = 0  /  Direction = North
 
 # O usuário escolhe o tipo de ação do personagem
 action_type = int(input())
+
 i = 1000
 while i > 0:
 
@@ -68,7 +62,7 @@ while i > 0:
     platform = int(str(state_str)[2:7], 2) # Converting platform number to integer
     direction = int(str(state_str)[7:9], 2) # North = 0 / East = 1 / South = 2 / West= 3
     
-    state = platform + (direction * 24) # Nova variável STATE como inteiro para ser usada nos acessos à q_table
+    state = (platform * 4) + (direction % 4) # Nova variável STATE como inteiro para ser usada nos acessos à q_table
 
     max_value = max(q_table[state][0], q_table[state][1], q_table[state][2]) # Define o maior reforço futuro possível
 
@@ -83,7 +77,24 @@ while i > 0:
 # Escreve a tabela em um arquivo .txt
 with open('resultado.txt', 'w') as f:
     for i in range(96):
+        if(i % 4 == 0):
+            f.write("\n\n")
         for j in range(3):
             f.write((str(q_table[i][j]) + " "))
         f.write("\n")
+
+# Atualiza a tabela para o próximo teste
+
+#with open('resultado.txt', 'r') as arquivo:
+#   linhas = arquivo.readlines()
+#
+#
+#for i in range(96):
+#    linha = linhas[i].split(" ")
+#    for j in range(3):
+#        q_table[i][j] = float(linha[j])
+
+
+
+
 
