@@ -31,8 +31,17 @@ alfa = 0.2 # Taxa de aprendizagem
 gama = 0.5 # Taxa de desconto
 
 # Modelando o estado inicial
-
 current_state = 0 # Platform = 0  /  Direction = North
+
+# Atualiza a tabela para o próximo teste
+#with open('resultado.txt', 'r') as arquivo:
+#   linhas = arquivo.readlines()
+#
+#
+#for i in range(96):
+#    linha = linhas[i].split(" ")
+#    for j in range(3):
+#        q_table[i][j] = float(linha[j])
 
 # O usuário escolhe o tipo de ação do personagem
 action_type = int(input())
@@ -83,16 +92,6 @@ with open('resultado.txt', 'w') as f:
             f.write((str(q_table[i][j]) + " "))
         f.write("\n")
 
-# Atualiza a tabela para o próximo teste
-
-#with open('resultado.txt', 'r') as arquivo:
-#   linhas = arquivo.readlines()
-#
-#
-#for i in range(96):
-#    linha = linhas[i].split(" ")
-#    for j in range(3):
-#        q_table[i][j] = float(linha[j])
 
 
 
