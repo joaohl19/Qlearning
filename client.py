@@ -33,15 +33,15 @@ gama = 0.5 # Taxa de desconto
 # Modelando o estado inicial
 current_state = 0 # Platform = 0  /  Direction = North
 
-# Atualiza a tabela para o próximo teste
-#with open('resultado.txt', 'r') as arquivo:
-#   linhas = arquivo.readlines()
-#
-#
-#for i in range(96):
-#    linha = linhas[i].split(" ")
-#    for j in range(3):
-#        q_table[i][j] = float(linha[j])
+#Atualiza a tabela para o próximo teste
+with open('resultado.txt', 'r') as arquivo:
+   linhas = arquivo.readlines()
+    
+
+for i in range(96):
+    linha = linhas[i].split(" ")
+    for j in range(3):
+        q_table[i][j] = float(linha[j])
 
 # O usuário escolhe o tipo de ação do personagem
 action_type = int(input())
@@ -68,6 +68,10 @@ while i > 0:
     
     state_str, reward = cn.get_state_reward(s, action)  # Recebe o estado e a recompensa resultantes da ação
 
+    # Ajusta o valor de para diminuir o impacto da queda no valor da q_table
+    if reward == -100:
+        alfa = 0.02
+        
     platform = int(str(state_str)[2:7], 2) # Converting platform number to integer
     direction = int(str(state_str)[7:9], 2) # North = 0 / East = 1 / South = 2 / West= 3
     
@@ -86,8 +90,6 @@ while i > 0:
 # Escreve a tabela em um arquivo .txt
 with open('resultado.txt', 'w') as f:
     for i in range(96):
-        if(i % 4 == 0):
-            f.write("\n\n")
         for j in range(3):
             f.write((str(q_table[i][j]) + " "))
         f.write("\n")
